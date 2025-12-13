@@ -1,0 +1,8 @@
+
+{
+  "name": "AskHeaven.io",
+  "description": "A premium, human-like AI Personal Assistant designed for solopreneurs and executives. Handles communication, scheduling, and logistics with judgment and discretion.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
