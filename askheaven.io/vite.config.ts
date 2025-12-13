@@ -1,14 +1,16 @@
 
 import { defineConfig, loadEnv } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 
 export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current working directory.
-  const env = loadEnv(mode, process.cwd(), '');
+  const rootEnv = loadEnv(mode, process.cwd(), '');
+  // Also attempt to load env from 'services' directory in case it was created there
+  const servicesEnv = loadEnv(mode, path.resolve(process.cwd(), 'services'), '');
   
-  // Merge Vercel system env vars (process.env) with local .env vars (env)
-  // This ensures variables set in the Vercel Dashboard are visible to the app
-  const mergedEnv = { ...process.env, ...env };
+  // Merge: Root env takes precedence, then services env, then system env
+  const mergedEnv = { ...process.env, ...servicesEnv, ...rootEnv };
 
   return {
     plugins: [react()],
