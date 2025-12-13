@@ -62,7 +62,7 @@ export interface MemoryItem {
 }
 
 export interface CallLogItem {
-  id: string;
+  id:string;
   type: 'missed' | 'incoming' | 'outgoing';
   contact: string;
   number: string;
@@ -78,7 +78,7 @@ export interface CallLogItem {
 export interface UserContext {
   name: string;
   role: string;
-  subscriptionTier: 'base' | 'premium'; // Added for feature gating
+  subscriptionTier: 'executive' | 'total_command'; // Updated plan names
   strictness?: 'low' | 'high';
   verbosity?: 'concise' | 'conversational';
   checkInFrequency?: 'low' | 'medium' | 'high'; // New setting
