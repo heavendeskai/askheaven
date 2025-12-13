@@ -2,7 +2,8 @@
 import React from 'react';
 import { UserContext, MemoryItem } from '../types';
 import { Button } from './ui/Button';
-import { Shield, MessageSquare, Activity, Lock, Mail, Calendar, HardDrive, Smartphone, Zap, Sliders, CheckCircle2, Clock, Brain, Trash2, Key } from 'lucide-react';
+import { Shield, MessageSquare, Activity, Lock, Mail, Calendar, HardDrive, Smartphone, Zap, Sliders, CheckCircle2, Clock, Brain, Trash2, LogOut } from 'lucide-react';
+import { supabase } from '../services/supabase';
 
 interface SettingsViewProps {
   userProfile: UserContext | null;
@@ -213,10 +214,10 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ userProfile, onUpdat
                       </div>
                       <div>
                          <div className="text-sm font-medium text-stone-900">Twilio</div>
-                         <div className="text-[10px] text-stone-500">Not Connected</div>
+                         <div className="text-[10px] text-stone-500">Coming Soon</div>
                       </div>
                    </div>
-                   <Button size="sm" variant="secondary" className="h-7 text-xs px-2">Connect</Button>
+                   <Button size="sm" variant="secondary" className="h-7 text-xs px-2" disabled>Waitlist</Button>
                 </div>
              </div>
           </Section>
@@ -228,15 +229,21 @@ export const SettingsView: React.FC<SettingsViewProps> = ({ userProfile, onUpdat
                    <div className="text-xs text-stone-500 capitalize">{userProfile.role === 'business' ? 'Executive Account' : 'Household Account'}</div>
                 </div>
                 <div className="text-xs font-bold text-stone-900 bg-amber-100 text-amber-800 px-3 py-1 rounded-full uppercase tracking-wider">
-                    {userProfile.subscriptionTier === 'premium' ? 'Platinum' : 'Silver'}
+                    {userProfile.subscriptionTier === 'total_command' ? 'Total Command' : 'Executive'}
                 </div>
              </div>
-             <div className="p-4 bg-stone-900 text-white rounded-xl flex justify-between items-center">
-                 <div className="text-xs">
-                    <p className="opacity-70 mb-1">API Usage</p>
-                    <p className="font-mono">14,203 / 50,000 Tokens</p>
+             <div className="flex gap-3">
+                 <div className="flex-1 p-4 bg-stone-900 text-white rounded-xl flex justify-between items-center">
+                     <div className="text-xs">
+                        <p className="opacity-70 mb-1">API Usage</p>
+                        <p className="font-mono">14,203 / 50,000 Tokens</p>
+                     </div>
+                     <Button size="sm" className="bg-white text-stone-900 hover:bg-stone-200 border-none">Upgrade Plan</Button>
                  </div>
-                 <Button size="sm" className="bg-white text-stone-900 hover:bg-stone-200 border-none">Upgrade Plan</Button>
+                 <Button onClick={() => supabase.auth.signOut()} variant="secondary" className="h-auto flex-col gap-1 px-4">
+                    <LogOut size={16} />
+                    <span className="text-[10px]">Sign Out</span>
+                 </Button>
              </div>
           </Section>
 
