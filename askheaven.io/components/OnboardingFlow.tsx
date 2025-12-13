@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Button } from './ui/Button';
 import { Sparkles, Check, ChevronRight, Mail, Phone, Lock, CreditCard, Building2, Home, Star, Zap, ExternalLink } from 'lucide-react';
 import { handleAuthClick } from '../services/gmail';
-import { STRIPE_PAYMENT_LINKS } from '../services/supabase';
+import { SQUARE_PAYMENT_LINKS } from '../services/supabase';
 
 interface OnboardingFlowProps {
   onComplete: (data: any) => void;
@@ -18,7 +18,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
   // Form Data
   const [name, setName] = useState('');
   const [role, setRole] = useState<'business' | 'home'>('business');
-  const [subscriptionTier, setSubscriptionTier] = useState<'base' | 'premium'>('premium');
+  const [subscriptionTier, setSubscriptionTier] = useState<'executive' | 'total_command'>('total_command');
   const [googleConnected, setGoogleConnected] = useState(false);
   const [twilioConnected, setTwilioConnected] = useState(false);
   const [strictness, setStrictness] = useState<'low' | 'high'>('high');
@@ -39,16 +39,16 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
     }
   };
 
-  const handleStripeCheckout = () => {
+  const handlePaymentCheckout = () => {
       // 1. Get the correct link
-      const link = subscriptionTier === 'premium' ? STRIPE_PAYMENT_LINKS.platinum : STRIPE_PAYMENT_LINKS.silver;
+      const link = subscriptionTier === 'total_command' ? SQUARE_PAYMENT_LINKS.total_command : SQUARE_PAYMENT_LINKS.executive;
       
       if (!link || link.includes('test_...')) {
-          alert("Stripe links are not configured in services/supabase.ts yet.");
+          alert("Square payment links are not configured in services/supabase.ts yet.");
           return;
       }
 
-      // 2. Open Stripe in new tab
+      // 2. Open Square in new tab
       window.open(link, '_blank');
 
       // 3. In a real app, we would use a Webhook to detect payment. 
@@ -61,7 +61,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
     else if (step === 'plan') setStep('billing');
     else if (step === 'billing') {
         if (!paymentComplete) {
-            // If they haven't clicked the button yet
+            alert("Please proceed to payment before continuing.");
             return;
         }
         setIsLoading(true);
@@ -101,7 +101,7 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                 <p className="text-stone-400 text-sm leading-relaxed">
                     {step === 'profile' && "Heaven adapts its personality and priorities based on your role."}
                     {step === 'plan' && "Choose the level of autonomy and tools you need."}
-                    {step === 'billing' && "Complete your subscription securely via Stripe."}
+                    {step === 'billing' && "Complete your subscription securely via Square."}
                     {step === 'connect' && "Heaven needs access to your communication streams to function."}
                     {step === 'calibrate' && "Decide how aggressively Heaven should guard your time."}
                 </p>
@@ -173,54 +173,54 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                 <div className="flex-1 flex flex-col space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
                     <label className="block text-xs font-bold text-stone-400 uppercase tracking-widest">Select Access Tier</label>
                     
-                    {/* Base Plan */}
+                    {/* Executive Plan */}
                     <button 
-                        onClick={() => setSubscriptionTier('base')}
-                        className={`relative p-6 rounded-2xl border-2 transition-all text-left group ${subscriptionTier === 'base' ? 'border-stone-900 bg-stone-50' : 'border-stone-100 hover:border-stone-200'}`}
+                        onClick={() => setSubscriptionTier('executive')}
+                        className={`relative p-6 rounded-2xl border-2 transition-all text-left group ${subscriptionTier === 'executive' ? 'border-stone-900 bg-stone-50' : 'border-stone-100 hover:border-stone-200'}`}
                     >
                         <div className="flex justify-between items-start mb-2">
                              <div className="flex items-center gap-2">
                                 <div className="p-1.5 bg-stone-200 rounded text-stone-600"><Mail size={16} /></div>
-                                <h3 className="font-bold text-stone-900">Executive Base</h3>
+                                <h3 className="font-bold text-stone-900">Executive</h3>
                              </div>
-                             <div className="text-sm font-medium text-stone-500">$29/mo</div>
+                             <div className="text-sm font-medium text-stone-500">$49/mo</div>
                         </div>
-                        <p className="text-xs text-stone-500 mb-4">Perfect for email & calendar management.</p>
+                        <p className="text-xs text-stone-500 mb-4">Essential command center for solopreneurs.</p>
                         <ul className="space-y-2">
-                            <li className="flex items-center gap-2 text-xs text-stone-600"><Check size={12} className="text-green-600"/> Email Drafting & Triage</li>
+                            <li className="flex items-center gap-2 text-xs text-stone-600"><Check size={12} className="text-green-600"/> Email Triage & Drafting</li>
                             <li className="flex items-center gap-2 text-xs text-stone-600"><Check size={12} className="text-green-600"/> Calendar Management</li>
                             <li className="flex items-center gap-2 text-xs text-stone-600"><Check size={12} className="text-green-600"/> Daily Briefs</li>
                         </ul>
-                        {subscriptionTier === 'base' && <div className="absolute top-4 right-4 text-stone-900"><Check size={20} /></div>}
+                        {subscriptionTier === 'executive' && <div className="absolute top-4 right-4 text-stone-900"><Check size={20} /></div>}
                     </button>
 
-                    {/* Total Plan */}
+                    {/* Total Command Plan */}
                     <button 
-                        onClick={() => setSubscriptionTier('premium')}
-                        className={`relative p-6 rounded-2xl border-2 transition-all text-left group ${subscriptionTier === 'premium' ? 'border-stone-900 bg-stone-900 text-white' : 'border-stone-100 hover:border-stone-200'}`}
+                        onClick={() => setSubscriptionTier('total_command')}
+                        className={`relative p-6 rounded-2xl border-2 transition-all text-left group ${subscriptionTier === 'total_command' ? 'border-stone-900 bg-stone-900 text-white' : 'border-stone-100 hover:border-stone-200'}`}
                     >
                         <div className="absolute -top-3 left-6 bg-amber-400 text-stone-900 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider flex items-center gap-1">
-                            <Star size={10} fill="currentColor" /> Most Popular
+                            <Star size={10} fill="currentColor" /> Best Value
                         </div>
                         <div className="flex justify-between items-start mb-2">
                              <div className="flex items-center gap-2">
                                 <div className="p-1.5 bg-stone-800 rounded text-amber-400"><Zap size={16} /></div>
-                                <h3 className={`font-bold ${subscriptionTier === 'premium' ? 'text-white' : 'text-stone-900'}`}>Total Command</h3>
+                                <h3 className={`font-bold ${subscriptionTier === 'total_command' ? 'text-white' : 'text-stone-900'}`}>Total Command</h3>
                              </div>
-                             <div className={`text-sm font-medium ${subscriptionTier === 'premium' ? 'text-stone-300' : 'text-stone-500'}`}>$49/mo</div>
+                             <div className={`text-sm font-medium ${subscriptionTier === 'total_command' ? 'text-stone-300' : 'text-stone-500'}`}>$99/mo</div>
                         </div>
-                        <p className={`text-xs mb-4 ${subscriptionTier === 'premium' ? 'text-stone-400' : 'text-stone-500'}`}>Full autonomy including voice and research.</p>
+                        <p className={`text-xs mb-4 ${subscriptionTier === 'total_command' ? 'text-stone-400' : 'text-stone-500'}`}>Full autonomy including voice and research.</p>
                         <ul className="space-y-2">
-                            <li className={`flex items-center gap-2 text-xs ${subscriptionTier === 'premium' ? 'text-stone-300' : 'text-stone-600'}`}><Check size={12} className="text-green-500"/> <strong>All Base Features</strong></li>
-                            <li className={`flex items-center gap-2 text-xs ${subscriptionTier === 'premium' ? 'text-stone-300' : 'text-stone-600'}`}><Check size={12} className="text-green-500"/> Twilio Voice & SMS Agent</li>
-                            <li className={`flex items-center gap-2 text-xs ${subscriptionTier === 'premium' ? 'text-stone-300' : 'text-stone-600'}`}><Check size={12} className="text-green-500"/> Deep Research (Web Browsing)</li>
+                            <li className={`flex items-center gap-2 text-xs ${subscriptionTier === 'total_command' ? 'text-stone-300' : 'text-stone-600'}`}><Check size={12} className="text-green-500"/> <strong>All Executive Features</strong></li>
+                            <li className={`flex items-center gap-2 text-xs ${subscriptionTier === 'total_command' ? 'text-stone-300' : 'text-stone-600'}`}><Check size={12} className="text-green-500"/> Twilio Voice & SMS Agent</li>
+                            <li className={`flex items-center gap-2 text-xs ${subscriptionTier === 'total_command' ? 'text-stone-300' : 'text-stone-600'}`}><Check size={12} className="text-green-500"/> Deep Research (Web Browsing)</li>
                         </ul>
-                        {subscriptionTier === 'premium' && <div className="absolute top-4 right-4 text-white"><Check size={20} /></div>}
+                        {subscriptionTier === 'total_command' && <div className="absolute top-4 right-4 text-white"><Check size={20} /></div>}
                     </button>
                 </div>
             )}
 
-            {/* STEP 3: BILLING (STRIPE INTEGRATION) */}
+            {/* STEP 3: BILLING (SQUARE INTEGRATION) */}
             {step === 'billing' && (
                 <div className="flex-1 flex flex-col space-y-6 animate-in fade-in slide-in-from-right-4 duration-500">
                     
@@ -228,10 +228,10 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                     <div className="bg-stone-50 rounded-xl p-4 border border-stone-100 flex justify-between items-center">
                         <div>
                             <div className="text-xs font-bold text-stone-400 uppercase tracking-widest">Selected Plan</div>
-                            <div className="font-serif font-medium text-stone-900">{subscriptionTier === 'premium' ? 'Total Command' : 'Executive Base'}</div>
+                            <div className="font-serif font-medium text-stone-900 capitalize">{subscriptionTier.replace('_', ' ')}</div>
                         </div>
                         <div className="text-right">
-                             <div className="font-bold text-stone-900">{subscriptionTier === 'premium' ? '$49' : '$29'}<span className="text-sm font-normal text-stone-500">/mo</span></div>
+                             <div className="font-bold text-stone-900">{subscriptionTier === 'total_command' ? '$99' : '$49'}<span className="text-sm font-normal text-stone-500">/mo</span></div>
                              <div className="text-[10px] text-green-600 font-medium">Monthly billing</div>
                         </div>
                     </div>
@@ -242,25 +242,25 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                         </div>
                         <div>
                             <h3 className="text-lg font-medium text-stone-900">Secure Checkout</h3>
-                            <p className="text-sm text-stone-500">Complete your subscription via Stripe to activate your account.</p>
+                            <p className="text-sm text-stone-500">Complete your subscription via Square to activate your account.</p>
                         </div>
                         
                         {!paymentComplete ? (
                             <Button 
-                                onClick={handleStripeCheckout} 
-                                className="w-full justify-center py-4 bg-purple-600 hover:bg-purple-700 text-white"
+                                onClick={handlePaymentCheckout} 
+                                className="w-full justify-center py-4 bg-blue-600 hover:bg-blue-700 text-white"
                             >
                                 Proceed to Payment <ExternalLink size={16} className="ml-2" />
                             </Button>
                         ) : (
                             <div className="bg-green-50 text-green-700 p-3 rounded-xl flex items-center justify-center gap-2 text-sm font-medium">
-                                <Check size={16} /> Payment Verified
+                                <Check size={16} /> Payment Portal Opened
                             </div>
                         )}
                         
                         <p className="text-[10px] text-stone-400">
                             {paymentComplete 
-                                ? "Click 'Continue' below to configure your workspace." 
+                                ? "Once you've completed payment in the new tab, click 'Continue' below."
                                 : "A new tab will open for secure payment. Return here after."}
                         </p>
                     </div>
@@ -289,15 +289,15 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                     </div>
 
                     {/* Twilio Connection - Locked for Base Plan */}
-                    <div className={`rounded-xl p-4 border flex items-start gap-3 ${subscriptionTier === 'base' ? 'bg-stone-100 border-stone-200 opacity-75' : 'bg-stone-50 border-stone-100'}`}>
+                    <div className={`rounded-xl p-4 border flex items-start gap-3 ${subscriptionTier === 'executive' ? 'bg-stone-100 border-stone-200 opacity-75' : 'bg-stone-50 border-stone-100'}`}>
                          <div className="p-2 bg-white rounded-lg text-stone-600 shadow-sm"><Phone size={16} /></div>
                          <div className="flex-1">
                              <div className="flex items-center gap-2">
                                 <h4 className="font-semibold text-stone-900 text-sm">Twilio (Voice & SMS)</h4>
-                                {subscriptionTier === 'base' && <span className="text-[10px] bg-stone-200 text-stone-500 px-1.5 rounded font-bold uppercase">Locked</span>}
+                                {subscriptionTier === 'executive' && <span className="text-[10px] bg-stone-200 text-stone-500 px-1.5 rounded font-bold uppercase">Locked</span>}
                              </div>
                              <p className="text-xs text-stone-500 mt-1">
-                                {subscriptionTier === 'base' 
+                                {subscriptionTier === 'executive' 
                                     ? "Upgrade to Total Command to enable voice agents and SMS screening." 
                                     : "Enables Heaven to make calls and screen texts on your behalf."}
                              </p>
@@ -307,9 +307,9 @@ export const OnboardingFlow: React.FC<OnboardingFlowProps> = ({ onComplete }) =>
                             variant="secondary" 
                             className="ml-auto" 
                             onClick={() => setTwilioConnected(!twilioConnected)}
-                            disabled={subscriptionTier === 'base'}
+                            disabled={subscriptionTier === 'executive'}
                          >
-                            {subscriptionTier === 'base' ? <LockIcon /> : (twilioConnected ? 'Added' : 'Add')}
+                            {subscriptionTier === 'executive' ? <LockIcon /> : (twilioConnected ? 'Added' : 'Add')}
                          </Button>
                     </div>
 
