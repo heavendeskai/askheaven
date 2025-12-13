@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Phone, Voicemail, Play, Pause, Search, PhoneIncoming, PhoneOutgoing, PhoneMissed, MessageSquare } from 'lucide-react';
 import { INITIAL_CALLS } from '../constants';
@@ -116,7 +115,7 @@ export const PhoneView: React.FC = () => {
                                 onClick={(e) => { e.stopPropagation(); togglePlay(call.id); }}
                                 className="w-6 h-6 rounded-full bg-stone-900 text-white flex items-center justify-center hover:bg-black transition-colors"
                              >
-                                 {isPlaying === call.id ? <Pause size={10} /> : <Play size={10} ml-0.5 />}
+                                 {isPlaying === call.id ? <Pause size={10} /> : <Play size={10} className="ml-0.5" />}
                              </button>
                              <div className="h-1 flex-1 bg-stone-200 rounded-full overflow-hidden">
                                  <div className={`h-full bg-stone-800 ${isPlaying === call.id ? 'w-1/2 animate-pulse' : 'w-0'}`}></div>
