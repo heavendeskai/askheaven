@@ -1,3 +1,4 @@
+
 import { GoogleGenAI, Chat, FunctionDeclaration, Type, Tool, Content, LiveServerMessage, Modality } from "@google/genai";
 import { HEAVEN_SYSTEM_INSTRUCTION } from "../constants";
 import { listEvents, listMessages, sendMessage as sendGmail, createEvent } from "./gmail"; // Added execution imports
@@ -140,7 +141,7 @@ export const connectToLiveSession = async (
 
     // Combine Tools
     const tools: Tool[] = [{ functionDeclarations: [...calendarTools, ...emailTools, ...phoneTools, ...taskTools, ...memoryTools] }];
-    if (userProfile?.subscriptionTier === 'premium') {
+    if (userProfile?.subscriptionTier === 'total_command') {
         tools.push({ googleSearch: {} });
     }
 
@@ -251,7 +252,7 @@ export const initializeChat = async (documents: DocumentItem[] = [], userProfile
   // 1. DYNAMIC TOOL INJECTION
   const activeTools: Tool[] = [];
   activeTools.push({ functionDeclarations: [...calendarTools, ...emailTools, ...taskTools, ...memoryTools] });
-  if (userProfile && userProfile.subscriptionTier === 'premium') {
+  if (userProfile && userProfile.subscriptionTier === 'total_command') {
       activeTools.push({ functionDeclarations: phoneTools });
       activeTools.push({ googleSearch: {} }); 
   }
