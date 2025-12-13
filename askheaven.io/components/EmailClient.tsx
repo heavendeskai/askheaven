@@ -79,7 +79,8 @@ export const EmailClient: React.FC = () => {
     setIsLoading(true);
     try {
       const messagesList = await listMessages(15);
-      const emailDetailsPromises = messagesList.map(msg => getMessage(msg.id));
+      // Explicitly type msg to avoid implicit any error
+      const emailDetailsPromises = messagesList.map((msg: { id: string }) => getMessage(msg.id));
       const rawEmails = await Promise.all(emailDetailsPromises);
       
       const formattedEmails: EmailUI[] = rawEmails.map((msg: GmailMessage) => {
