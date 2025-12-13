@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Search, Star, Archive, MoreHorizontal, Paperclip, Reply, Sparkles, LogIn, RefreshCw, Send, Loader2 } from 'lucide-react';
 import { Button } from './ui/Button';
@@ -83,7 +82,7 @@ export const EmailClient: React.FC = () => {
       const emailDetailsPromises = messagesList.map(msg => getMessage(msg.id));
       const rawEmails = await Promise.all(emailDetailsPromises);
       
-      const formattedEmails: EmailUI[] = rawEmails.map(msg => {
+      const formattedEmails: EmailUI[] = rawEmails.map((msg: GmailMessage) => {
         const headers = msg.payload.headers;
         const from = getHeader(headers, 'From');
         const subject = getHeader(headers, 'Subject');
