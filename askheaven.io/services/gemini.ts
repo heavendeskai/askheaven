@@ -1,4 +1,3 @@
-
 import { GoogleGenAI, Chat, FunctionDeclaration, Type, Tool, Content, LiveServerMessage, Modality } from "@google/genai";
 import { HEAVEN_SYSTEM_INSTRUCTION } from "../constants";
 import { listEvents, listMessages, sendMessage as sendGmail, createEvent } from "./gmail"; // Added execution imports
@@ -168,8 +167,9 @@ export const connectToLiveSession = async (
                 if (message.toolCall) {
                     onStatusChange('executing');
                     const responses = [];
+                    const functionCalls = message.toolCall.functionCalls || [];
                     
-                    for (const fc of message.toolCall.functionCalls) {
+                    for (const fc of functionCalls) {
                         console.log("Live Tool Execution:", fc.name);
                         let result: any = { status: 'error', message: 'Unknown error' };
 
@@ -372,11 +372,14 @@ export const sendMessage = async (
             toolResult = { error: e.message };
         }
 
-        result = await chatSession.sendToolResponse({
-            functionResponses: [{
-                id: call.id,
-                name: call.name,
-                response: { result: toolResult }
+        // Send function response back using sendMessage with part content
+        result = await chatSession.sendMessage({
+            message: [{
+                functionResponse: {
+                    id: call.id,
+                    name: call.name,
+                    response: { result: toolResult }
+                }
             }]
         });
     }
